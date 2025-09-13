@@ -1,0 +1,54 @@
+version: '3.8'
+services:
+  auth-service:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=auth_db
+      - DB_USER=auth_user
+      - DB_PASSWORD=auth_password
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - ACCESS_TOKEN_SECRET=your_access_token_secret
+      - REFRESH_TOKEN_SECRET=your_refresh_token_secret
+      - VERIFICATION_TOKEN_SECRET=your_verification_token_secret
+      - PASSWORD_RESET_SECRET=your_password_reset_secret
+      - SMTP_HOST=your_smtp_host
+      - SMTP_PORT=587
+      - SMTP_USER=your_smtp_user
+      - SMTP_PASS=your_smtp_password
+      - EMAIL_FROM=noreply@yourapp.com
+      - FRONTEND_URL=http://localhost:3000
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:13-alpine
+    environment:
+      - POSTGRES_DB=auth_db
+      - POSTGRES_USER=auth_user
+      - POSTGRES_PASSWORD=auth_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init-database.sql:/docker-entrypoint-initdb.d/init-database.sql
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
+  redis:
+    image: redis:6-alpine
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:
