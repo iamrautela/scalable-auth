@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const pool = require('../config/database');
 const redisClient = require('../config/redis');
 const { validationResult } = require('express-validator');
-const { sendVerificationEmail, sendPasswordResetEmail } = require('../services/emailService');
+const { sendVerificationEmail, sendPasswordResetEmail } = require('../services/emailServices');
 const { generateTokens, verifyRefreshToken } = require('../services/tokenService');
 
 const register = async (req, res) => {
